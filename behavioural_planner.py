@@ -29,7 +29,7 @@ class BehaviouralPlanner:
         self._goal_state                    = [0.0, 0.0, 0.0]
         self._goal_index                    = 0
         self._stop_count                    = 0
-u
+
     def set_lookahead(self, lookahead):
         self._lookahead = lookahead
 
@@ -103,14 +103,14 @@ u
             # along the waypoints.
             # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
             # ------------------------------------------------------------------
-            goal_index = get_goal_index(waypoints, ego_state, closest_len, closest_index)
+            goal_index = self.get_goal_index(waypoints, ego_state, closest_len, closest_index)
             # ------------------------------------------------------------------
 
             # Finally, check the index set between closest_index and goal_index
             # for stop signs, and compute the goal state accordingly.
             # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
             # ------------------------------------------------------------------
-            goal_index, stop_sign_found = check_for_stop_signs(waypoints, closest_index, goal_index)
+            goal_index, stop_sign_found = self.check_for_stop_signs(waypoints, closest_index, goal_index)
             self._goal_index = goal_index
             self._goal_state = waypoints[goal_index]
             # ------------------------------------------------------------------
@@ -150,7 +150,7 @@ u
                 # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
                 # --------------------------------------------------------------
                 closest_len, closest_index = get_closest_index(waypoints, ego_state)
-                goal_index = get_goal_index(waypoints, ego_state, closest_len, closest_index)
+                goal_index = self.get_goal_index(waypoints, ego_state, closest_len, closest_index)
                 # --------------------------------------------------------------
 
                 # We've stopped for the required amount of time, so the new goal 
@@ -247,7 +247,7 @@ u
         # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
         # ------------------------------------------------------------------
         for wp_index in range(1, len(waypoints)):
-          arc_length += np.linalg.norm(waypoints[wp_index][0:2] - waypoints[wp_index-1][0:2])
+          arc_length += np.linalg.norm(np.array(waypoints[wp_index][0:2]) - np.array(waypoints[wp_index-1][0:2]))
           if arc_length > self._lookahead:
               break
         # ------------------------------------------------------------------
@@ -436,7 +436,7 @@ def get_closest_index(waypoints, ego_state):
     # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
     # ------------------------------------------------------------------
     for i in range(len(waypoints)):
-        curr_len = np.linalg.norm(waypoints[i][0:2] - ego_state[0:2])
+        curr_len = np.linalg.norm(np.array(waypoints[i][0:2]) - np.array(ego_state[0:2]))
         if curr_len < closest_len:
             closest_len = curr_len
             closest_index = i

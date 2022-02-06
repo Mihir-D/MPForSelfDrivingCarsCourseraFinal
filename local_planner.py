@@ -87,11 +87,11 @@ class LocalPlanner:
         # consecutive waypoints, then use the np.arctan2() function.
         # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
         # ------------------------------------------------------------------
-        delta = None
+        delta = np.zeros(2)
         if goal_index == len(waypoints)-1:
             delta = waypoints[-1][0:2] - waypoints[-1][0:2]
         else: 
-            delta = waypoints[goal_index+1][0:2] - waypoints[goal_index]][0:2]
+            delta = waypoints[goal_index+1][0:2] - waypoints[goal_index][0:2]
         heading = np.arctan2(delta[1], delta[0])
         # ------------------------------------------------------------------
 
