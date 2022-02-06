@@ -124,7 +124,6 @@ u
                 self._state = DECELERATE_TO_STOP
             # ------------------------------------------------------------------
 
-            pass
 
         # In this state, check if we have reached a complete stop. Use the
         # closed loop speed to do so, to ensure we are actually at a complete
@@ -137,7 +136,6 @@ u
                 self._state == STAY_STOPPED
             # ------------------------------------------------------------------
 
-            pass
 
         # In this state, check to see if we have stayed stopped for at
         # least STOP_COUNTS number of cycles. If so, we can now leave
@@ -174,7 +172,6 @@ u
                     self._state = FOLLOW_LANE
                 # --------------------------------------------------------------
 
-                pass
 
             # Otherwise, continue counting.
             else:
@@ -183,7 +180,6 @@ u
                 self._stop_count += 1
                 # --------------------------------------------------------------
 
-                pass
         else:
             raise ValueError('Invalid state value.')
 

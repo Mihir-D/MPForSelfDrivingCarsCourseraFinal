@@ -82,8 +82,10 @@ class CollisionChecker:
 
                 # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
                 # --------------------------------------------------------------
-                # circle_locations[:, 0] = ... 
-                # circle_locations[:, 1] = ...
+                circle_locations[:, 0] = np.add(path[0][j], 
+                                np.multiply(self._circle_offsets[:], np.cos(path[2][j])))
+                circle_locations[:, 1] = np.add(path[1][j], 
+                                np.multiply(self._circle_offsets[:], np.sin(path[2][j])))
                 # --------------------------------------------------------------
 
                 # Assumes each obstacle is approximated by a collection of
@@ -164,7 +166,10 @@ class CollisionChecker:
                 # A lower score implies a more suitable path.
                 # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
                 # --------------------------------------------------------------
-                # score = ...
+                # Ideally I would compute a total sum of squared distance from center
+                # for each point on the path as the total lateral cost for that path
+                # But for now just squared L2 norm of last point
+                score = np.linalg.norm(paths[i][0:2][-1] - goal_state[0:2]) ** 2
                 # --------------------------------------------------------------
 
                 # Compute the "proximity to other colliding paths" score and
@@ -177,10 +182,9 @@ class CollisionChecker:
                         if not collision_check_array[j]:
                             # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
                             # --------------------------------------------------
-                            # score += self._weight * ...
+                            # For now, squared L2 norm including heading
+                            score += self._weight * np.linalg.norm(paths[j][:][-1] - paths[i][:][-1]) ** 2
                             # --------------------------------------------------
-
-                            pass
 
             # Handle the case of colliding paths.
             else:
