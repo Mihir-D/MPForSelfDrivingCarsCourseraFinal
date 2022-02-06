@@ -49,8 +49,7 @@ u
             waypoints: current waypoints to track (global frame). 
                 length and speed in m and m/s.
                 (includes speed to track at each x,y location.)
-                format: [[x0, y0, v0],
-                         [x1, y1, v1],
+                format: [[x0, y0, v0]
                          ...
                          [xn, yn, vn]]
                 example:
@@ -97,31 +96,32 @@ u
             # First, find the closest index to the ego vehicle.
             # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
             # ------------------------------------------------------------------
-            # closest_len, closest_index = ...
+            closest_len, closest_index = get_closest_index(waypoints, ego_state)
             # ------------------------------------------------------------------
 
             # Next, find the goal index that lies within the lookahead distance
             # along the waypoints.
             # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
             # ------------------------------------------------------------------
-            # goal_index = ...
+            goal_index = get_goal_index(waypoints, ego_state, closest_len, closest_index)
             # ------------------------------------------------------------------
 
             # Finally, check the index set between closest_index and goal_index
             # for stop signs, and compute the goal state accordingly.
             # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
             # ------------------------------------------------------------------
-            # goal_index, stop_sign_found = ...
-            # self._goal_index = ...
-            # self._goal_state = ...
+            goal_index, stop_sign_found = check_for_stop_signs(waypoints, closest_index, goal_index)
+            self._goal_index = goal_index
+            self._goal_state = waypoints[goal_index]
             # ------------------------------------------------------------------
 
             # If stop sign found, set the goal to zero speed, then transition to 
             # the deceleration state.
             # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
             # ------------------------------------------------------------------
-            # if stop_sign_found:
-            #   ...
+            if stop_sign_found:
+                self._goal_state[2] = 0.
+                self._state = DECELERATE_TO_STOP
             # ------------------------------------------------------------------
 
             pass
@@ -133,7 +133,8 @@ u
         elif self._state == DECELERATE_TO_STOP:
             # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
             # ------------------------------------------------------------------
-            # ...
+            if closed_loop_speed < DECELERATE_TO_STOP:
+                self._state == STAY_STOPPED
             # ------------------------------------------------------------------
 
             pass
@@ -150,8 +151,8 @@ u
             if self._stop_count == STOP_COUNTS:
                 # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
                 # --------------------------------------------------------------
-                # closest_len, closest_index = ...
-                # goal_index = ...
+                closest_len, closest_index = get_closest_index(waypoints, ego_state)
+                goal_index = get_goal_index(waypoints, ego_state, closest_len, closest_index)
                 # --------------------------------------------------------------
 
                 # We've stopped for the required amount of time, so the new goal 
@@ -160,16 +161,17 @@ u
                 # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
                 # --------------------------------------------------------------
                 # stop_sign_found = ...
-                # self._goal_index = ... 
-                # self._goal_state = ... 
+                self._goal_index = goal_index 
+                self._goal_state = waypoints[goal_index]
                 # --------------------------------------------------------------
 
                 # If the stop sign is no longer along our path, we can now
                 # transition back to our lane following state.
                 # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
                 # --------------------------------------------------------------
-                # if not stop_sign_found:
-                #   ...
+                goal_index, stop_sign_found = check_for_stop_signs(self, waypoints, closest_index, goal_index)
+                if not stop_sign_found:
+                    self._state = FOLLOW_LANE
                 # --------------------------------------------------------------
 
                 pass
@@ -178,7 +180,7 @@ u
             else:
                 # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
                 # --------------------------------------------------------------
-                # ...
+                self._stop_count += 1
                 # --------------------------------------------------------------
 
                 pass
@@ -248,8 +250,10 @@ u
         # Otherwise, find our next waypoint.
         # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
         # ------------------------------------------------------------------
-        # while wp_index < len(waypoints) - 1:
-        #   arc_length += ...
+        for wp_index in range(1, len(waypoints)):
+          arc_length += np.linalg.norm(waypoints[wp_index][0:2] - waypoints[wp_index-1][0:2])
+          if arc_length > self._lookahead:
+              break
         # ------------------------------------------------------------------
 
         return wp_index
@@ -435,8 +439,11 @@ def get_closest_index(waypoints, ego_state):
     closest_index = 0
     # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
     # ------------------------------------------------------------------
-    # for i in range(len(waypoints)):
-    #   ...
+    for i in range(len(waypoints)):
+        curr_len = np.linalg.norm(waypoints[i][0:2] - ego_state[0:2])
+        if curr_len < closest_len:
+            closest_len = curr_len
+            closest_index = i
     # ------------------------------------------------------------------
 
     return closest_len, closest_index
