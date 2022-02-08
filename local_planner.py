@@ -18,6 +18,7 @@ class LocalPlanner:
     def __init__(self, num_paths, path_offset, circle_offsets, circle_radii, 
                  path_select_weight, time_gap, a_max, slow_speed, 
                  stop_line_buffer):
+        self._prev_best_path = None
         self._num_paths = num_paths
         self._path_offset = path_offset
         self._path_optimizer = path_optimizer.PathOptimizer()
@@ -89,9 +90,9 @@ class LocalPlanner:
         # ------------------------------------------------------------------
         delta = np.zeros(2)
         if goal_index == len(waypoints)-1:
-            delta = waypoints[-1][0:2] - waypoints[-1][0:2]
-        else: 
-            delta = waypoints[goal_index+1][0:2] - waypoints[goal_index][0:2]
+            delta = np.array(waypoints[-1][0:2]) - np.array( waypoints[-2][0:2])
+        else:
+            delta = np.array(waypoints[goal_index+1][0:2]) - np.array(waypoints[goal_index][0:2])
         heading = np.arctan2(delta[1], delta[0])
         # ------------------------------------------------------------------
 
@@ -152,8 +153,8 @@ class LocalPlanner:
             # and sin(goal_theta + pi/2), respectively.
             # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
             # ------------------------------------------------------------------
-            x_offset = offset * cos(goal_t + np.pi)
-            y_offset = offset * sin(goal_t + np.pi)
+            x_offset = offset * cos(goal_t + np.pi/2)
+            y_offset = offset * sin(goal_t + np.pi/2)
             # ------------------------------------------------------------------
 
             goal_state_set.append([goal_x + x_offset, 
@@ -209,6 +210,9 @@ class LocalPlanner:
                                path[1][-1] - goal_state[1], 
                                path[2][-1] - goal_state[2]]) > 0.1:
                 path_validity.append(False)
+                print("dist = ", np.linalg.norm([path[0][-1] - goal_state[0], 
+                               path[1][-1] - goal_state[1], 
+                               path[2][-1] - goal_state[2]]))
             else:
                 paths.append(path)
                 path_validity.append(True)

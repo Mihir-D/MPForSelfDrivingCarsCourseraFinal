@@ -169,7 +169,7 @@ class CollisionChecker:
                 # Ideally I would compute a total sum of squared distance from center
                 # for each point on the path as the total lateral cost for that path
                 # But for now just squared L2 norm of last point
-                score = np.linalg.norm(paths[i][0:2][-1] - goal_state[0:2]) ** 2
+                score = (paths[i][0][-1] - goal_state[0]) ** 2 + (paths[i][1][-1] - goal_state[1]) ** 2
                 # --------------------------------------------------------------
 
                 # Compute the "proximity to other colliding paths" score and
