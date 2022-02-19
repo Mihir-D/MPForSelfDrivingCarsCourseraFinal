@@ -183,7 +183,8 @@ class CollisionChecker:
                             # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
                             # --------------------------------------------------
                             # For now, squared L2 norm including heading
-                            score += self._weight * np.linalg.norm(paths[j][:][-1] - paths[i][:][-1]) ** 2
+                            # for k in range(len(paths[j])):
+                            score += self._weight * np.linalg.norm(np.array(paths[j][0:2][-1]) - np.array(paths[i][0:2][-1])) ** 2
                             # --------------------------------------------------
 
             # Handle the case of colliding paths.
@@ -194,5 +195,7 @@ class CollisionChecker:
             if score < best_score:
                 best_score = score
                 best_index = i
+
+        print("best index ==== ", best_index)
 
         return best_index

@@ -97,6 +97,7 @@ class BehaviouralPlanner:
             # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
             # ------------------------------------------------------------------
             closest_len, closest_index = get_closest_index(waypoints, ego_state)
+            print("State = FOLLOW_LANE")
             # ------------------------------------------------------------------
 
             # Next, find the goal index that lies within the lookahead distance
@@ -120,7 +121,7 @@ class BehaviouralPlanner:
             # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
             # ------------------------------------------------------------------
             if stop_sign_found:
-                self._goal_state[2] = 0.
+                self._goal_state[2] = 0
                 self._state = DECELERATE_TO_STOP
             # ------------------------------------------------------------------
 
@@ -132,8 +133,9 @@ class BehaviouralPlanner:
         elif self._state == DECELERATE_TO_STOP:
             # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
             # ------------------------------------------------------------------
-            if closed_loop_speed < DECELERATE_TO_STOP:
-                self._state == STAY_STOPPED
+            print("State = DECELERATE_TO_STOP")
+            if closed_loop_speed <= STOP_THRESHOLD:
+                self._state = STAY_STOPPED
             # ------------------------------------------------------------------
 
 
@@ -141,6 +143,7 @@ class BehaviouralPlanner:
         # least STOP_COUNTS number of cycles. If so, we can now leave
         # the stop sign and transition to the next state.
         elif self._state == STAY_STOPPED:
+            print("State = STAY_STOPPED")
             # We have stayed stopped for the required number of cycles.
             # Allow the ego vehicle to leave the stop sign. Once it has
             # passed the stop sign, return to lane following.
@@ -246,7 +249,7 @@ class BehaviouralPlanner:
         # Otherwise, find our next waypoint.
         # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
         # ------------------------------------------------------------------
-        for wp_index in range(1, len(waypoints)):
+        for wp_index in range(closest_index+1, len(waypoints)):
           arc_length += np.linalg.norm(np.array(waypoints[wp_index][0:2]) - np.array(waypoints[wp_index-1][0:2]))
           if arc_length > self._lookahead:
               break

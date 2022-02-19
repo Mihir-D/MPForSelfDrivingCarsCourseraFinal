@@ -210,9 +210,9 @@ class LocalPlanner:
                                path[1][-1] - goal_state[1], 
                                path[2][-1] - goal_state[2]]) > 0.1:
                 path_validity.append(False)
-                print("dist = ", np.linalg.norm([path[0][-1] - goal_state[0], 
-                               path[1][-1] - goal_state[1], 
-                               path[2][-1] - goal_state[2]]))
+                # print("dist = ", np.linalg.norm([path[0][-1] - goal_state[0], 
+                #                path[1][-1] - goal_state[1], 
+                #                path[2][-1] - goal_state[2]]))
             else:
                 paths.append(path)
                 path_validity.append(True)

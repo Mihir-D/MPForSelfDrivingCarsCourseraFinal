@@ -740,11 +740,12 @@ def exec_waypoint_nav_demo(args):
 
                 #  # Compute the goal state set from the behavioural planner's computed goal state.
                 goal_state_set = lp.get_goal_state_set(bp._goal_index, bp._goal_state, waypoints, ego_state)
-                print("goal_state_set", goal_state_set)
+                # print("goal_state_set", goal_state_set)
 
                 #  # Calculate planned paths in the local frame.
                 paths, path_validity = lp.plan_paths(goal_state_set)
-                # print("paths, validity = ", paths, path_validity)
+                print("path_validity, len(paths)    = ", path_validity, len(paths))
+                # print("paths = ", paths)
 
                 #  # Transform those paths back to the global frame.
                 paths = local_planner.transform_paths(paths, ego_state)
@@ -754,6 +755,7 @@ def exec_waypoint_nav_demo(args):
                 collision_check_array = lp._collision_checker.collision_check(paths, [parkedcar_box_pts])
 
                 #  # Compute the best local path.
+                # 3 is center, >3 to the right
                 best_index = lp._collision_checker.select_best_path_index(paths, collision_check_array, bp._goal_state)
                 #  # If no path was feasible, continue to follow the previous best path.
                 if best_index == None:
@@ -768,7 +770,9 @@ def exec_waypoint_nav_demo(args):
                 desired_speed = bp._goal_state[2]
                 lead_car_state = [lead_car_pos[1][0], lead_car_pos[1][1], lead_car_speed[1]]
                 decelerate_to_stop = bp._state == behavioural_planner.DECELERATE_TO_STOP
+                print("Follow Lead vehicle = ", bp._follow_lead_vehicle)
                 local_waypoints = lp._velocity_planner.compute_velocity_profile(best_path, desired_speed, ego_state, current_speed, decelerate_to_stop, lead_car_state, bp._follow_lead_vehicle)
+                print("vel = ", best_path[2][-1])
                 # --------------------------------------------------------------
 
                 if local_waypoints != None:
@@ -820,6 +824,7 @@ def exec_waypoint_nav_demo(args):
                                          current_speed,
                                          current_timestamp, frame)
                 controller.update_controls()
+                print("Desired Speed = ", controller._desired_speed)
                 cmd_throttle, cmd_steer, cmd_brake = controller.get_commands()
             else:
                 cmd_throttle = 0.0
