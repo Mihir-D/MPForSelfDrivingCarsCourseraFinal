@@ -170,7 +170,7 @@ class BehaviouralPlanner:
                 # transition back to our lane following state.
                 # TODO: INSERT YOUR CODE BETWEEN THE DASHED LINES
                 # --------------------------------------------------------------
-                goal_index, stop_sign_found = check_for_stop_signs(self, waypoints, closest_index, goal_index)
+                goal_index, stop_sign_found = self.check_for_stop_signs(waypoints, closest_index, goal_index)
                 if not stop_sign_found:
                     self._state = FOLLOW_LANE
                 # --------------------------------------------------------------

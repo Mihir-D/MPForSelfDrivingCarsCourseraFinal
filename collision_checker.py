@@ -196,6 +196,4 @@ class CollisionChecker:
                 best_score = score
                 best_index = i
 
-        print("best index ==== ", best_index)
-
         return best_index

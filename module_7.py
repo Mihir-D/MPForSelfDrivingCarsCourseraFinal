@@ -744,7 +744,7 @@ def exec_waypoint_nav_demo(args):
 
                 #  # Calculate planned paths in the local frame.
                 paths, path_validity = lp.plan_paths(goal_state_set)
-                print("path_validity, len(paths)    = ", path_validity, len(paths))
+                # print("path_validity, len(paths)    = ", path_validity, len(paths))
                 # print("paths = ", paths)
 
                 #  # Transform those paths back to the global frame.
@@ -771,8 +771,10 @@ def exec_waypoint_nav_demo(args):
                 lead_car_state = [lead_car_pos[1][0], lead_car_pos[1][1], lead_car_speed[1]]
                 decelerate_to_stop = bp._state == behavioural_planner.DECELERATE_TO_STOP
                 print("Follow Lead vehicle = ", bp._follow_lead_vehicle)
+                # print("bp desired_speed = ", desired_speed)
+                # print("best path = ", best_path)
                 local_waypoints = lp._velocity_planner.compute_velocity_profile(best_path, desired_speed, ego_state, current_speed, decelerate_to_stop, lead_car_state, bp._follow_lead_vehicle)
-                print("vel = ", best_path[2][-1])
+                # print("vels = ", local_waypoints)
                 # --------------------------------------------------------------
 
                 if local_waypoints != None:
@@ -814,7 +816,6 @@ def exec_waypoint_nav_demo(args):
                     
                     # Update the other controller values and controls
                     controller.update_waypoints(wp_interp)
-                    pass
 
             ###
             # Controller Update
@@ -824,7 +825,6 @@ def exec_waypoint_nav_demo(args):
                                          current_speed,
                                          current_timestamp, frame)
                 controller.update_controls()
-                print("Desired Speed = ", controller._desired_speed)
                 cmd_throttle, cmd_steer, cmd_brake = controller.get_commands()
             else:
                 cmd_throttle = 0.0
